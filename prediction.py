@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import helper.helper as hp
 
 class Prediction:
@@ -87,6 +86,7 @@ class Prediction:
         self.meanList = meanList
         self.opsional = opsional
         self.prediction = self.main_prediction_measure(self.data)
+        self.topN = self.getTopN()
 
     @staticmethod
     def __numerator(similarity, meanCentered):
@@ -163,7 +163,6 @@ class Prediction:
         indexOfNeighborhood = list(np.delete(hp.createList(0, len(neighborhood[indexUser]) - 1), indexZero).tolist())
         # Index Neighborhood Item based = Index
         # Index Neighborhood User based = IndexUser
-        print(f"Similarity[{indexUser if opsional == 1 else index}] :",neighborhood[indexUser if opsional == 1 else index])
         neighborhood = list(np.delete(neighborhood[indexUser if opsional == 1 else index], indexZero).tolist())
 
         # Mengurutkan similarity dan tetangganya
@@ -187,7 +186,6 @@ class Prediction:
             indexOfNeighborhood[indexFlag] = prevIndexList
         # Index Mean Centered Item Based = IndexUser
         # Index Mean Centered User Based = Index
-        print(f"MeanCentered[{indexUser if opsional ==  0 else index}] : {meanCentered[indexUser if opsional ==  0 else index]}")
         indexOfNeighborhood = [
             (meanCentered[indexUser if opsional ==  0 else index][i]) 
             for i in indexOfNeighborhood[0:k]
@@ -210,14 +208,27 @@ class Prediction:
         float
             Nilai prediksi berdasarkan formula Collaborative Filtering.
         """
-        print("User Index :",userTarget,"Item Index :",item)
-        print("Similarity :", self.similarity)
-        print("Main Centered :", hp.reverseMatrix(self.mean_centered) if not self.twins else hp.reverseMatrix(self.mean_centered_result_brother))
         target = self.selectedNeighborhood(self.similarity, item, userTarget, self.k, self.data, self.mean_centered if not self.twins else hp.reverseMatrix(self.mean_centered_result_brother), opsional=self.opsional, twins=self.twins)
-        print(target)
+        denom = self.__denominator(target[0])
         return (self.meanList[userTarget if self.opsional == 1 else item] 
                 if not self.twins else 
-                self.meanListBrother[userTarget if self.opsional == 1 else item]) + self.__numerator(target[0], target[1]) / self.__denominator(target[0])
+                (self.meanListBrother[userTarget if self.opsional == 1 else item]) + self.__numerator(target[0], target[1]) / denom) if denom != 0 else 0
+
+    def getTopN(self) :
+        """
+        Mengembalikan hasil dari Top-N dari prediksi
+
+        Returns:
+        --------
+        array
+            Array yang berisi tentang Top-N
+        """
+        result = []
+        for i in range(len(self.data)) :
+            result.append(
+                sorted([self.prediction[i][inner].real for inner in range(len(self.data[i])) if self.data[i][inner] == 0],reverse=True)[0:self.k]
+                )
+        return result
 
     def main_prediction_measure(self, data):
         """
@@ -251,3 +262,14 @@ class Prediction:
             Array numpy yang berisi hasil prediksi.
         """
         return np.array(self.prediction).tolist()
+    
+    def getTopNArray(self) :
+        """
+        Mengembalikan hasil prediksi dalam bentuk DataFrame pandas.
+
+        Returns:
+        --------
+        pandas.DataFrame
+            DataFrame yang berisi hasil prediksi.
+        """
+        return self.topN

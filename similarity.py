@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import helper.helper as hp
 import cmath
@@ -238,10 +237,10 @@ class Cosine(Pearson):
         tempMc1 = [data[u][mc1]for mc1 in range(len(data[u]))]
         tempMc2 = [data[v][mc2]for mc2 in range(len(data[v]))]
 
-        tempMc1= np.delete(tempMc1,help.indexOfZero(data[u],data[v]))
-        tempMc2 = np.delete(tempMc2,help.indexOfZero(data[u],data[v]))
+        tempMc1= np.delete(tempMc1,help.indexOfZero(data[u],data[v])).tolist()
+        tempMc2 = np.delete(tempMc2,help.indexOfZero(data[u],data[v])).tolist()
 
-        denom = self.denominator(data[v],data[u])
+        denom = self.denominator(data[v],data[u]).real
         return self.numerator(tempMc1,tempMc2) / denom if denom != 0 else 0
 
     def mainSimilarityMeasure(self) :

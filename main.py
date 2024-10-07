@@ -1,6 +1,6 @@
 import similarity as sm
 
-from fastapi import FastAPI , HTTPException
+from fastapi import FastAPI , HTTPException , APIRouter
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -15,7 +15,7 @@ async def pearson(data : DataPassed):
     if data.data == [] and data.k == 0 and data.opsional:
         raise HTTPException(status_code=404,detail="Data yang kamu kirimkan kosong")
 
-    pearson = sm.Pearson(data.data,opsional=1,k=3)
+    pearson = sm.Pearson(data.data,opsional=data.opsional,k=2)
     
     return {
         "error" : False,
@@ -24,6 +24,7 @@ async def pearson(data : DataPassed):
             "mean-centered" : pearson.getMeanCenteredArray(),
             "similarity" : pearson.getSimilarityArray(),
             "prediction" : pearson.getPredictionArray(),
+            "top-n" : pearson.getTopNArray(),
         } 
     }
 
@@ -33,7 +34,7 @@ async def cosine(data : DataPassed):
     if data.data == [] and data.k == 0 and data.opsional:
         raise HTTPException(status_code=404,detail="Data yang kamu kirimkan kosong")
 
-    cosine = sm.Cosine(data.data,opsional=1,k=3)
+    cosine = sm.Cosine(data.data,opsional=data.opsional,k=2)
     
     return {
         "error" : False,
@@ -42,6 +43,7 @@ async def cosine(data : DataPassed):
             "mean-centered" : cosine.getMeanCenteredArray(),
             "similarity" : cosine.getSimilarityArray(),
             "prediction" : cosine.getPredictionArray(),
+            "top-n" : cosine.getTopNArray(),
         } 
     }
 
@@ -50,7 +52,7 @@ async def acosine(data : DataPassed):
     if data.data == [] and data.k == 0 and data.opsional:
         raise HTTPException(status_code=404,detail="Data yang kamu kirimkan kosong")
 
-    acosine = sm.ACosine(data.data,opsional=1,k=3)
+    acosine = sm.ACosine(data.data,opsional=data.opsional,k=2)
     
     return {
         "error" : False,
@@ -59,6 +61,7 @@ async def acosine(data : DataPassed):
             "mean-centered" : acosine.getMeanCenteredArray(),
             "similarity" : acosine.getSimilarityArray(),
             "prediction" : acosine.getPredictionArray(),
+            "top-n" : acosine.getTopNArray(),
         } 
     }
 
@@ -67,7 +70,7 @@ async def bc(data : DataPassed):
     if data.data == [] and data.k == 0 and data.opsional:
         raise HTTPException(status_code=404,detail="Data yang kamu kirimkan kosong")
 
-    bc = sm.BC(data.data,opsional=1,k=3)
+    bc = sm.BC(data.data,opsional=data.opsional,k=2)
     
     return {
         "error" : False,
@@ -76,6 +79,7 @@ async def bc(data : DataPassed):
             "mean-centered" : bc.getMeanCenteredArray(),
             "similarity" : bc.getSimilarityArray(),
             "prediction" : bc.getPredictionArray(),
+            "top-n" : bc.getTopNArray(),
         } 
     }
 
