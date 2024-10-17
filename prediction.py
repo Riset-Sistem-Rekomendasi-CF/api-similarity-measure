@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import helper.helper as hp
 
 class Prediction:
@@ -19,8 +20,8 @@ class Prediction:
         Jumlah tetangga terdekat (neighbors) yang akan digunakan dalam perhitungan prediksi.
     meanList : list of float
         Daftar mean dari masing-masing vektor (baris atau kolom) dalam data.
-    opsional : int
-        0 untuk item-based, 1 untuk user-based.
+    opsional : str
+        item-based,user-based.
     prediction : list of list
         Matriks hasil prediksi yang dihasilkan oleh algoritma.
     twins : bool, optional
@@ -68,8 +69,8 @@ class Prediction:
             Daftar mean dari brother dataset, jika menggunakan dataset kembar.
         mean_centered_result_brother : list of list, optional
             Mean-centered dari brother dataset, jika menggunakan dataset kembar.
-        opsional : int
-            0 untuk pendekatan item-based, 1 untuk pendekatan user-based.
+        opsional : str
+            item-based,user-based.
         k : int
             Jumlah tetangga terdekat yang akan digunakan dalam prediksi.
         twins : bool, optional
@@ -143,8 +144,8 @@ class Prediction:
             Matriks data yang sedang diproses.
         meanCentered : list of list
             Mean-centered data dari matriks asli.
-        opsional : int
-            0 untuk item-based, 1 untuk user-based.
+        opsional : str
+            item-based, user-based.
         twins : bool
             Apakah menggunakan brother dataset untuk mean-centered.
 
@@ -153,17 +154,16 @@ class Prediction:
         list of list
             Daftar `k` tetangga terdekat beserta mean-centered data dari tetangga tersebut.
         """
-        # Untuk pendekatan item-based (opsional = 0), data di-transpose
-        data = hp.reverseMatrix(data)
-        meanCentered = hp.reverseMatrix(meanCentered) if not twins or opsional == 0 else meanCentered
+        # data = hp.reverseMatrix(data) if opsional == 1 else data
+        meanCentered = hp.reverseMatrix(meanCentered) if not twins or opsional == "item-based" else meanCentered
 
-        # Dapatkan indeks dari data yang bernilai 0
-        indexZero = hp.checkIndexZeroOfData(data=data, index=indexUser if opsional == 0 else index, indexUser=indexUser if opsional == 1 else index)
+        # indexZero = hp.checkIndexZeroOfData(data=data, index=indexUser if opsional == 0 else index, indexUser=indexUser if opsional == 1 else index)
+        indexZero = hp.checkIndexZeroOfData(data=data, fixIndex=indexUser if opsional == "user-based" else index, indexUser=indexUser,maxIndex=len(neighborhood))
         # Membuat Index Similarity
         indexOfNeighborhood = list(np.delete(hp.createList(0, len(neighborhood[indexUser]) - 1), indexZero).tolist())
         # Index Neighborhood Item based = Index
         # Index Neighborhood User based = IndexUser
-        neighborhood = list(np.delete(neighborhood[indexUser if opsional == 1 else index], indexZero).tolist())
+        neighborhood = list(np.delete(neighborhood[indexUser if opsional == "user-based" else index], indexZero).tolist())
 
         # Mengurutkan similarity dan tetangganya
         lengthLoop = len(neighborhood)
@@ -186,11 +186,11 @@ class Prediction:
             indexOfNeighborhood[indexFlag] = prevIndexList
         # Index Mean Centered Item Based = IndexUser
         # Index Mean Centered User Based = Index
-        indexOfNeighborhood = [
-            (meanCentered[indexUser if opsional ==  0 else index][i]) 
+        meanCenteredBasedIndexNeighborhood = [
+            (meanCentered[indexUser if opsional ==  "item-based" else index][i]) 
             for i in indexOfNeighborhood[0:k]
         ]
-        return [neighborhood[0:k], indexOfNeighborhood]
+        return [neighborhood[0:k], meanCenteredBasedIndexNeighborhood ]
 
     def prediction_measure(self, userTarget, item) -> float:
         """
@@ -210,25 +210,8 @@ class Prediction:
         """
         target = self.selectedNeighborhood(self.similarity, item, userTarget, self.k, self.data, self.mean_centered if not self.twins else hp.reverseMatrix(self.mean_centered_result_brother), opsional=self.opsional, twins=self.twins)
         denom = self.__denominator(target[0])
-        return (self.meanList[userTarget if self.opsional == 1 else item] 
-                if not self.twins else 
-                (self.meanListBrother[userTarget if self.opsional == 1 else item]) + self.__numerator(target[0], target[1]) / denom) if denom != 0 else 0
-
-    def getTopN(self) :
-        """
-        Mengembalikan hasil dari Top-N dari prediksi
-
-        Returns:
-        --------
-        array
-            Array yang berisi tentang Top-N
-        """
-        result = []
-        for i in range(len(self.data)) :
-            result.append(
-                sorted([self.prediction[i][inner].real for inner in range(len(self.data[i])) if self.data[i][inner] == 0],reverse=True)[0:self.k]
-                )
-        return result
+        return ((self.meanList[userTarget if self.opsional == "user-based" else item] if not self.twins else self.meanListBrother[userTarget if self.opsional == "user-based" else item]) 
+                  + (self.__numerator(target[0], target[1]) / denom)) if denom != 0 else 0
 
     def main_prediction_measure(self, data):
         """
@@ -251,6 +234,22 @@ class Prediction:
             ]
             for i in range(len(data))
         ]
+    
+    def getTopN(self) :
+        """
+        Mengembalikan hasil dari Top-N dari prediksi
+
+        Returns:
+        --------
+        array
+            Array yang berisi tentang Top-N
+        """
+        result = []
+        for i in range(len(self.data)) :
+            result.append(
+                sorted([self.prediction[i][inner] for inner in range(len(self.data[i])) if self.data[i][inner] == 0],reverse=True)[0:self.k]
+                )
+        return result
 
     def getPredictionArray(self):
         """

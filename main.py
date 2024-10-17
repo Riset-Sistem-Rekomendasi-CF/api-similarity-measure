@@ -8,7 +8,7 @@ app = FastAPI()
 class DataPassed(BaseModel):
     data : list 
     k : int
-    opsional : int
+    opsional : str
 
 @app.post("/pearson")
 async def pearson(data : DataPassed):
