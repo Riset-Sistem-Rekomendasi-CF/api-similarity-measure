@@ -80,7 +80,8 @@ class MeanCentered:
         float
             Nilai mean dari vektor yang diberikan, mengabaikan elemen nol.
         """
-        return sum([j for j in data if j != 0]) / len([j for j in data if j != 0])
+        numerator = len([j for j in data if j != 0])
+        return (sum([j for j in data if j != 0]) / numerator) if numerator != 0 else 0
 
     def mean_centered_measure(self, data, meanList) -> list[list]:
         """

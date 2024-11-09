@@ -448,6 +448,12 @@ class ACosine(mc.MeanCentered, pc.Prediction):
             Array numpy yang berisi nilai Asymmetric Cosine similarity.
         """
         return self.result
+    
+    def getMeanCenteredBrotherArray(self) :
+        return self.mean_centered_result_brother
+    
+    def getMeanBrotherArray(self) :
+        return self.meanListBrother
 
 class BC(mc.MeanCentered, pc.Prediction):
     """
@@ -596,3 +602,7 @@ class BC(mc.MeanCentered, pc.Prediction):
             Array numpy yang berisi similarity matrix.
         """
         return self.result
+    
+    def getProbabilityArray(self) :
+
+        return [self.bunchOfProbabilitas(i)for i in range(len(self.data))]
