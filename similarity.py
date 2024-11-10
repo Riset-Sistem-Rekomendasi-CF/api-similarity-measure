@@ -6,6 +6,7 @@ import cmath
 import helper.helper as help
 import meanCentered as mc
 import prediction as pc
+from sklearn.manifold import MDS
 
 class Pearson(mc.MeanCentered, pc.Prediction):
     """
@@ -159,6 +160,16 @@ class Pearson(mc.MeanCentered, pc.Prediction):
             Array numpy yang berisi nilai Pearson similarity.
         """
         return self.result
+
+    def getReducedDataArray(self) :
+        data = 1-np.real(self.result)
+
+        # Memastikan matriks simetris
+        dissimilarity = (data + data.T) / 2
+
+        # Menerapkan MDS1
+        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
+        return mds.fit_transform(dissimilarity)
 
 
 class Cosine(Pearson):
@@ -454,6 +465,16 @@ class ACosine(mc.MeanCentered, pc.Prediction):
     
     def getMeanBrotherArray(self) :
         return self.meanListBrother
+    
+    def getReducedDataArray(self) :
+            data = 1-np.real(self.result)
+
+            # Memastikan matriks simetris
+            dissimilarity = (data + data.T) / 2
+
+            # Menerapkan MDS1
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
+            return mds.fit_transform(dissimilarity)
 
 class BC(mc.MeanCentered, pc.Prediction):
     """
@@ -606,3 +627,13 @@ class BC(mc.MeanCentered, pc.Prediction):
     def getProbabilityArray(self) :
 
         return [self.bunchOfProbabilitas(i)for i in range(len(self.data))]
+    
+    def getReducedDataArray(self) :
+            data = 1-np.real(self.result)
+
+            # Memastikan matriks simetris
+            dissimilarity = (data + data.T) / 2
+
+            # Menerapkan MDS1
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
+            return mds.fit_transform(dissimilarity)

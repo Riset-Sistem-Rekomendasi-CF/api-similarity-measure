@@ -33,7 +33,7 @@ async def pearson(data : DataPassed):
             "mean-centered" : pearson.getMeanCenteredArray(),
             "similarity" : pearson.getSimilarityArray(),
             "prediction" : pearson.getPredictionArray(),
-            "top-n" : pearson.getTopNArray(),
+            "reduced-data" : pearson.getReducedDataArray(),
         } 
     }
 
@@ -53,6 +53,7 @@ async def cosine(data : DataPassed):
             "similarity" : cosine.getSimilarityArray(),
             "prediction" : cosine.getPredictionArray(),
             "top-n" : cosine.getTopNArray(),
+            "reduced-data" : cosine.getReducedDataArray(),
         } 
     }
 
@@ -73,6 +74,7 @@ async def acosine(data : DataPassed):
             "similarity" : acosine.getSimilarityArray(),
             "prediction" : acosine.getPredictionArray(),
             "top-n" : acosine.getTopNArray(),
+            "reduced-data" : acosine.getReducedDataArray(),
         } 
     }
 
@@ -92,6 +94,7 @@ async def bc(data : DataPassed):
             "probability" : bc.getProbabilityArray(),
             "prediction" : bc.getPredictionArray(),
             "top-n" : bc.getTopNArray(),
+            "reduced-data" : bc.getReducedDataArray(),
         } 
     }
 
