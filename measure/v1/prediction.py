@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import helper.helper as hp
 
 class Prediction:
@@ -157,10 +156,12 @@ class Prediction:
         # data = hp.reverseMatrix(data) if opsional == 1 else data
         meanCentered = hp.reverseMatrix(meanCentered) if not twins or opsional == "item-based" else meanCentered
 
-        # indexZero = hp.checkIndexZeroOfData(data=data, index=indexUser if opsional == 0 else index, indexUser=indexUser if opsional == 1 else index)
+        # Memeriksa index dari bilangan 0 dan dirinya sendiri
         indexZero = hp.checkIndexZeroOfData(data=data, fixIndex=indexUser if opsional == "user-based" else index, indexUser=indexUser,maxIndex=len(neighborhood))
+        
         # Membuat Index Similarity
         indexOfNeighborhood = list(np.delete(hp.createList(0, len(neighborhood[indexUser]) - 1), indexZero).tolist())
+        
         # Index Neighborhood Item based = Index
         # Index Neighborhood User based = IndexUser
         neighborhood = list(np.delete(neighborhood[indexUser if opsional == "user-based" else index], indexZero).tolist())
@@ -184,6 +185,7 @@ class Prediction:
                     innerCondition = False
             neighborhood[indexFlag] = prevNeighborhood
             indexOfNeighborhood[indexFlag] = prevIndexList
+            
         # Index Mean Centered Item Based = IndexUser
         # Index Mean Centered User Based = Index
         meanCenteredBasedIndexNeighborhood = [

@@ -1,11 +1,10 @@
-import pandas as pd
 import time
 import numpy as np
 import helper.helper as hp
 import cmath
 import helper.helper as help
-import meanCentered as mc
-import prediction as pc
+import measure.v1.meanCentered as mc
+import measure.v1.prediction as pc
 from sklearn.manifold import MDS
 
 class Pearson(mc.MeanCentered, pc.Prediction):

@@ -1,5 +1,4 @@
 import helper.helper as hp
-import pandas as pd
 
 class MeanCentered:
     """
