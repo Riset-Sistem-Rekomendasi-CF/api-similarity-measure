@@ -114,7 +114,24 @@ boolean
 def isNotExistIndex(index,data): 
     return 0 <= index < len(data)
 
-def createList(r1, r2):
+"""
+Membuat list dengan element tertentu
+
+params :
+--------
+r1 : int
+    Element list
+r2 : int
+    Panjang List
+
+return :
+---------
+List 
+    Berisi element r1 dan panjang list ketentuan dengan r2
+int 
+    Berisi element r1 jika nilai r1 sama dengan r2
+"""
+def createList(r1, r2) -> list|int :
     if (r1 == r2):
         return r1
     else:

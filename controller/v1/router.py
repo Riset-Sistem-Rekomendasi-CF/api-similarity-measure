@@ -19,6 +19,7 @@ async def pearson(data : DataPassed) :
             "mean-centered" : pearson.getMeanCenteredArray(),
             "similarity" : pearson.getSimilarityArray(),
             "prediction" : pearson.getPredictionArray(),
+            "top-n" : pearson.getTopNArray(),
             "reduced-data" : pearson.getReducedDataArray(),
         } 
     }

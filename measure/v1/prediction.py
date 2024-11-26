@@ -248,8 +248,10 @@ class Prediction:
         """
         result = []
         for i in range(len(self.data)) :
+            sim = np.array([self.prediction[i][inner] for inner in range(len(self.data[i])) if self.data[i][inner] == 0])
             result.append(
-                sorted([self.prediction[i][inner] for inner in range(len(self.data[i])) if self.data[i][inner] == 0],reverse=True)[0:self.k]
+                # Sorting a similarities
+                list(sim[sim.argsort()[::-1]][0:self.k])
                 )
         return result
 

@@ -1,5 +1,6 @@
 origins = [
     "http://localhost:3000",
+    "*",
 ]
 
 cors_options = {
