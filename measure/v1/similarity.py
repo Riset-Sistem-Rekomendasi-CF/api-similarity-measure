@@ -1,8 +1,6 @@
-import time
 import numpy as np
 import helper.helper as hp
 import cmath
-import helper.helper as help
 import measure.v1.meanCentered as mc
 import measure.v1.prediction as pc
 from sklearn.manifold import MDS
@@ -59,7 +57,6 @@ class Pearson(mc.MeanCentered, pc.Prediction):
             Jumlah tetangga (neighbors) yang akan dipertimbangkan dalam prediksi.
         """
         super().__init__(data, opsional=opsional)
-        self.start = time.time()
         self.result = self.mainSimilarityMeasure()
         pc.Prediction.__init__(self, self.mean_centered_result, self.result, data, meanList=self.meanList, opsional=opsional, k=k)
 
@@ -124,9 +121,10 @@ class Pearson(mc.MeanCentered, pc.Prediction):
         tempMc1 = [meanC[u][mc1] for mc1 in range(len(data[u]))]
         tempMc2 = [meanC[v][mc2] for mc2 in range(len(data[v]))]
 
-        tempMc1 = np.delete(tempMc1, help.indexOfZero(data[u], data[v])).tolist()
-        tempMc2 = np.delete(tempMc2, help.indexOfZero(data[u], data[v])).tolist()
+        tempMc1 = np.delete(tempMc1, hp.indexOfZero(data[u], data[v])).tolist()
+        tempMc2 = np.delete(tempMc2, hp.indexOfZero(data[u], data[v])).tolist()
         denom = self.denominator(tempMc1, tempMc2).real
+        # print(type((self.numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10))
         return (self.numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10
 
     def mainSimilarityMeasure(self):
@@ -139,6 +137,7 @@ class Pearson(mc.MeanCentered, pc.Prediction):
             Matriks similarity yang berisi nilai Pearson similarity antara setiap pasangan vektor.
         """
         result = [[] for _ in range(len(self.data))]
+        
         for i in range(len(self.data)): 
             for j in range(i, len(self.data)):
                 if i == j:
@@ -168,7 +167,7 @@ class Pearson(mc.MeanCentered, pc.Prediction):
 
         # Menerapkan MDS1
         mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
-        return mds.fit_transform(dissimilarity)
+        return mds.fit_transform(dissimilarity).tolist()
 
 
 class Cosine(Pearson):
@@ -247,8 +246,8 @@ class Cosine(Pearson):
         tempMc1 = [data[u][mc1]for mc1 in range(len(data[u]))]
         tempMc2 = [data[v][mc2]for mc2 in range(len(data[v]))]
 
-        tempMc1= np.delete(tempMc1,help.indexOfZero(data[u],data[v])).tolist()
-        tempMc2 = np.delete(tempMc2,help.indexOfZero(data[u],data[v])).tolist()
+        tempMc1= np.delete(tempMc1,hp.indexOfZero(data[u],data[v])).tolist()
+        tempMc2 = np.delete(tempMc2,hp.indexOfZero(data[u],data[v])).tolist()
 
         denom = self.denominator(data[v],data[u]).real
         return (self.numerator(tempMc1,tempMc2).real / denom) if denom != 0 else 0
@@ -421,8 +420,8 @@ class ACosine(mc.MeanCentered, pc.Prediction):
         tempMc1 = [meanC[u][mc1] for mc1 in range(len(data[u]))]
         tempMc2 = [meanC[v][mc2] for mc2 in range(len(data[v]))]
 
-        tempMc1 = np.delete(tempMc1, help.indexOfZero(data[u], data[v])).tolist()
-        tempMc2 = np.delete(tempMc2, help.indexOfZero(data[u], data[v])).tolist()
+        tempMc1 = np.delete(tempMc1, hp.indexOfZero(data[u], data[v])).tolist()
+        tempMc2 = np.delete(tempMc2, hp.indexOfZero(data[u], data[v])).tolist()
         denom = self.denominator(tempMc1, tempMc2).real
         return (self.numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10
     
@@ -473,7 +472,7 @@ class ACosine(mc.MeanCentered, pc.Prediction):
 
             # Menerapkan MDS1
             mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
-            return mds.fit_transform(dissimilarity)
+            return mds.fit_transform(dissimilarity).tolist()
 
 class BC(mc.MeanCentered, pc.Prediction):
     """
@@ -635,4 +634,4 @@ class BC(mc.MeanCentered, pc.Prediction):
 
             # Menerapkan MDS1
             mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
-            return mds.fit_transform(dissimilarity)
+            return mds.fit_transform(dissimilarity).tolist()

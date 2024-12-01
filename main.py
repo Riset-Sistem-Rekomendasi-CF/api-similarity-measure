@@ -15,5 +15,6 @@ if __name__ == "__main__" :
     uvicorn.run(
         app=app,
         reload=True,
-        workers=1
+        workers=1,
+        port=5002
     )

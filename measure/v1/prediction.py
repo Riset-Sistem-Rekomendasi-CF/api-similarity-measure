@@ -105,6 +105,7 @@ class Prediction:
         float
             Hasil pembilang dari formula prediksi.
         """
+        print(type(similarity[0]),type(meanCentered[0]))
         return sum(sim * meanC for sim, meanC in zip(similarity, meanCentered))
 
     @staticmethod
@@ -122,6 +123,7 @@ class Prediction:
         float
             Hasil penyebut dari formula prediksi.
         """
+        print("prediction",type(similarity),similarity,126)
         return sum(abs(sim) for sim in similarity)
 
     @staticmethod
@@ -172,6 +174,7 @@ class Prediction:
             indexFlag = i
             prevNeighborhood = np.real(neighborhood[i])
             prevIndexList = indexOfNeighborhood[i]
+            
             innerCondition = True
             j = i + 1
             while innerCondition and j < lengthLoop and prevNeighborhood < np.real(neighborhood[j]):
@@ -248,10 +251,10 @@ class Prediction:
         """
         result = []
         for i in range(len(self.data)) :
-            sim = np.array([self.prediction[i][inner] for inner in range(len(self.data[i])) if self.data[i][inner] == 0])
             result.append(
+                sorted([self.prediction[i][inner] for inner in range(len(self.data[i])) if self.data[i][inner] == 0])[::-1][0:self.k]
                 # Sorting a similarities
-                list(sim[sim.argsort()[::-1]][0:self.k])
+                # list(sim[np.array(sim).argsort()[::-1]][0:self.k])
                 )
         return result
 
