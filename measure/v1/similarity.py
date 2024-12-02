@@ -61,7 +61,7 @@ class Pearson(mc.MeanCentered, pc.Prediction):
         pc.Prediction.__init__(self, self.mean_centered_result, self.result, data, meanList=self.meanList, opsional=opsional, k=k)
 
     @staticmethod
-    def numerator(data1, data2):
+    def __numerator(data1, data2):
         """
         Menghitung nilai numerator (pembilang) dari dua vektor.
 
@@ -80,7 +80,7 @@ class Pearson(mc.MeanCentered, pc.Prediction):
         return sum((data1[i] * data2[i]) for i in range(len(data1)))
 
     @staticmethod
-    def denominator(data1, data2):
+    def __denominator(data1, data2):
         """
         Menghitung nilai denominator (penyebut) dari dua vektor.
 
@@ -123,9 +123,9 @@ class Pearson(mc.MeanCentered, pc.Prediction):
 
         tempMc1 = np.delete(tempMc1, hp.indexOfZero(data[u], data[v])).tolist()
         tempMc2 = np.delete(tempMc2, hp.indexOfZero(data[u], data[v])).tolist()
-        denom = self.denominator(tempMc1, tempMc2).real
+        denom = self.__denominator(tempMc1, tempMc2).real
         # print(type((self.numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10))
-        return (self.numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10
+        return (self.__numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10
 
     def mainSimilarityMeasure(self):
         """
@@ -221,6 +221,44 @@ class Cosine(Pearson):
             Jumlah tetangga (neighbors) yang akan dipertimbangkan dalam prediksi.
         """
         super().__init__(data, opsional=opsional, k=k)
+
+    @staticmethod
+    def __numerator(data1, data2):
+        """
+        Menghitung nilai numerator (pembilang) dari dua vektor.
+
+        Parameters:
+        -----------
+        data1 : list of float
+            Vektor pertama yang akan digunakan dalam perhitungan.
+        data2 : list of float
+            Vektor kedua yang akan digunakan dalam perhitungan.
+
+        Returns:
+        --------
+        float
+            Nilai hasil perkalian dot product dari dua vektor.
+        """
+        return sum((data1[i] * data2[i]) for i in range(len(data1)))
+
+    @staticmethod
+    def __denominator(data1, data2):
+        """
+        Menghitung nilai denominator (penyebut) dari dua vektor.
+
+        Parameters:
+        -----------
+        data1 : list of float
+            Vektor pertama yang akan digunakan dalam perhitungan.
+        data2 : list of float
+            Vektor kedua yang akan digunakan dalam perhitungan.
+
+        Returns:
+        --------
+        float
+            Nilai hasil perkalian magnitudo (panjang) dari dua vektor.
+        """
+        return cmath.sqrt(sum((data1[i]**2) for i in range(len(data1)))) * cmath.sqrt(sum((data2[i]**2) for i in range(len(data2))))
     
     def measureSimilarity(self,u,v,data):
         """
@@ -249,8 +287,10 @@ class Cosine(Pearson):
         tempMc1= np.delete(tempMc1,hp.indexOfZero(data[u],data[v])).tolist()
         tempMc2 = np.delete(tempMc2,hp.indexOfZero(data[u],data[v])).tolist()
 
-        denom = self.denominator(data[v],data[u]).real
-        return (self.numerator(tempMc1,tempMc2).real / denom) if denom != 0 else 0
+        denom = self.__denominator(data[v],data[u]).real
+        numer = self.__numerator(tempMc1,tempMc2).real
+        # return (self.__numerator(tempMc1,tempMc2).real / denom) if denom != 0 else -10
+        return (numer / denom) if denom != 0 and numer != 0 else 0
 
     def mainSimilarityMeasure(self) :
         """
@@ -530,6 +570,7 @@ class BC(mc.MeanCentered, pc.Prediction):
         """
         super().__init__(data, opsional=opsional)
         self.result = self.mainSimilarityMeasure()
+        self.probabilitas = [self.bunchOfProbabilitas(i)for i in range(len(self.data))]
         pc.Prediction.__init__(self, self.mean_centered_result, self.result, data, meanList=self.meanList, opsional=opsional, k=k)
 
     def probabilitas(self, kolom, target):
@@ -623,8 +664,8 @@ class BC(mc.MeanCentered, pc.Prediction):
         return self.result
     
     def getProbabilityArray(self) :
-
-        return [self.bunchOfProbabilitas(i)for i in range(len(self.data))]
+        # return [self.bunchOfProbabilitas(i)for i in range(len(self.data))]
+        return self.probabilitas
     
     def getReducedDataArray(self) :
             data = 1-np.real(self.result)

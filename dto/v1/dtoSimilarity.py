@@ -2,6 +2,6 @@ from pydantic import BaseModel
 
 
 class DataPassed(BaseModel):
-    data : list[list] 
+    data : list 
     k : int
     opsional : str
