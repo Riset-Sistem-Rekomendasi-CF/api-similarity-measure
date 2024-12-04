@@ -158,7 +158,7 @@ class Prediction:
 
         indexZero = hp.checkIndexZeroOfData(data=hp.reverseMatrix(data) if opsional == "user-based" else data, fixIndex=indexUser if opsional == "user-based" else index, indexUser=indexUser if opsional == "item-based" else index,maxIndex=len(neighborhood))
 
-        indexOfNeighborhood = list(np.delete(hp.createList(0, len(neighborhood[indexUser]) - 1), indexZero).tolist())
+        indexOfNeighborhood = list(np.delete(hp.createList(0, len(neighborhood[0]) - 1), indexZero).tolist())
 
         neighborhood = list(np.delete(neighborhood[indexUser if opsional == "user-based" else index], indexZero).tolist())
 

@@ -124,6 +124,9 @@ class Pearson(mc.MeanCentered, pc.Prediction):
         tempMc1 = np.delete(tempMc1, hp.indexOfZero(data[u], data[v])).tolist()
         tempMc2 = np.delete(tempMc2, hp.indexOfZero(data[u], data[v])).tolist()
         denom = self.__denominator(tempMc1, tempMc2).real
+        numer = self.__numerator(tempMc1, tempMc2).real
+        print(f"Index= {u+1} {v+1} {numer} / {denom} = {(numer / denom) if denom != 0 and numer != 0 else 0}")
+        print("result",(numer / denom) if denom != 0 and numer != 0 else 0)
         # print(type((self.numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10))
         return (self.__numerator(tempMc1, tempMc2).real / denom) if denom != 0 else -10
 
@@ -308,6 +311,7 @@ class Cosine(Pearson):
                     result[i].append(1)
                     continue
                 similarity_result = self.measureSimilarity(i,j,self.data)
+                print(i,j,similarity_result)
                 result[i].append(similarity_result)
                 result[j].append(similarity_result)
 
