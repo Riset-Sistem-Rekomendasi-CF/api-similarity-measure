@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from controller.v1.router import similarity_routers
+from controller.v2.router import similarity_routers
 from config.config import cors_options
 import uvicorn
 

@@ -1,5 +1,6 @@
 origins = [
     "http://localhost:3000",
+    "koalaers.trunojoyoan.com",
     "*",
 ]
 

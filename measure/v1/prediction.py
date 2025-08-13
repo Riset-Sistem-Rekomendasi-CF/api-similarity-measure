@@ -185,50 +185,8 @@ class Prediction:
             (meanCentered[indexUser if opsional ==  "item-based" else index][i]) 
             for i in indexOfNeighborhood[0:k]
         ]
-        print([neighborhood[0:k], meanCenteredBasedIndexNeighborhood ])
+        
         return [neighborhood[0:k], meanCenteredBasedIndexNeighborhood ]
-        # # data = hp.reverseMatrix(data) if opsional == 1 else data
-        # meanCentered = hp.reverseMatrix(meanCentered) if not twins or opsional == "item-based" else meanCentered
-
-        # # Memeriksa index dari bilangan 0 dan dirinya sendiri
-        # indexZero = hp.checkIndexZeroOfData(data=data, fixIndex=indexUser if opsional == "user-based" else index, indexUser=indexUser,maxIndex=len(neighborhood))
-        
-        # # Membuat Index Similarity
-        # indexOfNeighborhood = list(np.delete(hp.createList(0, len(neighborhood[indexUser]) - 1), indexZero).tolist())
-        
-        # # Index Neighborhood Item based = Index
-        # # Index Neighborhood User based = IndexUser
-        # neighborhood = list(np.delete(neighborhood[indexUser if opsional == "user-based" else index], indexZero).tolist())
-
-        # # Mengurutkan similarity dan tetangganya
-        # lengthLoop = len(neighborhood)
-        # for i in range(lengthLoop - 2, -1, -1):
-        #     indexFlag = i
-        #     prevNeighborhood = np.real(neighborhood[i])
-        #     prevIndexList = indexOfNeighborhood[i]
-            
-        #     innerCondition = True
-        #     j = i + 1
-        #     while innerCondition and j < lengthLoop and prevNeighborhood < np.real(neighborhood[j]):
-        #         if prevNeighborhood < np.real(neighborhood[j]):
-        #             indexFlag = j
-        #             neighborhood[j - 1] = np.real(neighborhood[j])
-        #             indexOfNeighborhood[j - 1] = indexOfNeighborhood[j]
-        #             j += 1
-        #         else:
-        #             j += 1
-        #             innerCondition = False
-        #     neighborhood[indexFlag] = prevNeighborhood
-        #     indexOfNeighborhood[indexFlag] = prevIndexList
-            
-        # # Index Mean Centered Item Based = IndexUser
-        # # Index Mean Centered User Based = Index
-        # meanCenteredBasedIndexNeighborhood = [
-        #     (meanCentered[indexUser if opsional ==  "item-based" else index][i]) 
-        #     for i in indexOfNeighborhood[0:k]
-        # ]
-        # print([neighborhood[0:k], meanCenteredBasedIndexNeighborhood ])
-        # return [neighborhood[0:k], meanCenteredBasedIndexNeighborhood ]
 
     def prediction_measure(self, userTarget, item) -> float:
         """
