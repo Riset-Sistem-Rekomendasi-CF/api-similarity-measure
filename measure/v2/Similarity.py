@@ -1,5 +1,8 @@
 from measure.v2.mean import Mean
 from measure.v2.prediction import Prediction
+import numpy as np
+from sklearn.manifold import MDS
+
 
 from abc import abstractmethod
 
@@ -25,7 +28,8 @@ class Similarity(Prediction) :
     def __init__(self, data, *, toyData : bool|None = True, opsional="user-based",k=2) :
         
         Mean.__init__(self,data,opsional=opsional,toyData=toyData)
-
+        self.adapted_mean_centered = self.result_mean_centered if opsional == "user-based" else np.transpose(self.result_mean_centered)
+        
         self.result_similarity = self.main_calculation()
         
         Prediction.__init__(self,data,self.result_similarity,opsional=opsional,k=k,toyData=toyData)
@@ -45,3 +49,16 @@ class Similarity(Prediction) :
     @property
     @abstractmethod
     def main_calculation(self) -> list[list[float]]: ...
+
+    def show_similarity(self) -> object:
+        return self.result_similarity
+    
+    def get_reduced_data(self) :
+        data = 1-np.real(self.result_similarity)
+
+        # Memastikan matriks simetris
+        dissimilarity = (data + data.T) / 2
+
+        # Menerapkan MDS1
+        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
+        return mds.fit_transform(dissimilarity).tolist()

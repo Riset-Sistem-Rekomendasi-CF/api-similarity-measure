@@ -12,28 +12,19 @@ from operator import mul,itemgetter
 class CosineSimilarity (Similarity) :
 
     def __init__(self, data, *, toyData : bool|None = True, opsional="user-based",k=2) :
-        # Mean.__init__(self,data,opsional=opsional,toyData=toyData)
-
-        # self.result_similarity = self.main_calculation()
-
-        # Prediction.__init__(self,data,self.result_similarity,opsional=opsional,k=k,toyData=toyData)
         super().__init__(data,toyData=toyData,opsional=opsional,k=k)
 
     @override
-    def numerator(self,u:int,v:int, commonlyRated : list[int], matrix : list|None = None) -> float:
+    def numerator(self,u:int,v:int, commonlyRated : list[int]) -> float:
         if len(commonlyRated) == 0 :
             return 0
-        if not self.toyData :
-            return sum(map(mul, list(itemgetter(*commonlyRated)(matrix[u])) , list(itemgetter(*commonlyRated)(matrix[v])) )) if len(commonlyRated) > 1 else matrix[u][commonlyRated[0]] * matrix[v][commonlyRated[0]]
-        return sum(map(mul, list(itemgetter(*commonlyRated)(self.__data[u])) , list(itemgetter(*commonlyRated)(self.__data[v])) )) if len(commonlyRated) > 1 else self.__data[u][commonlyRated[0]] * self.__data[v][commonlyRated[0]]
+        return sum(map(mul, list(itemgetter(*commonlyRated)(self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u))) , list(itemgetter(*commonlyRated)(self.self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))) )) if len(commonlyRated) > 1 else (self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u))[commonlyRated[0]] * (self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))[commonlyRated[0]]
 
     @override
-    def denominator(self,u : int,v : int, set1 : list[int] ,set2 : list[int], matrix : list|None = None) -> float:
+    def denominator(self,u : int,v : int, set1 : list[int] ,set2 : list[int]) -> float:
         if len(set1) == 0 or len(set2) == 0 :
             return 0
-        if not self.toyData :
-            return cmath.sqrt( sum(list(map(lambda x : x**2, itemgetter(*set1)(matrix[u]) ))) if len(set1) > 1 else matrix[u][set1[0]]**2 ) * cmath.sqrt(sum(list(map(lambda x : x**2,itemgetter(*set2)(matrix[v])) )) if len(set2) > 1 else matrix[v][set2[0]]**2)
-        return cmath.sqrt( sum(list(map(lambda x : x**2, itemgetter(*set1)(self.__data[u]) ))) if len(set1) > 1 else self.__data[u][set1[0]]**2 ) * cmath.sqrt(sum(list(map(lambda x : x**2,itemgetter(*set2)(self.__data[v])) )) if len(set2) > 1 else self.__data[v][set2[0]]**2)
+        return cmath.sqrt( sum(list(map(lambda x : x**2, itemgetter(*set1)(self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u)) ))) if len(set1) > 1 else self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u)[set1[0]]**2 ) * cmath.sqrt(sum(list(map(lambda x : x**2,itemgetter(*set2)(self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))) )) if len(set2) > 1 else self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v)[set2[0]]**2)
 
     @override
     def similarity_calculation(self, u : int, v : int):

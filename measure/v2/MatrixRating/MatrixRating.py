@@ -1,6 +1,5 @@
 import numpy as np 
 import pandas as pd
-from operator import itemgetter
 
 Vector = list[float|int]
 Matrix = list[list[float|int]]
@@ -27,6 +26,9 @@ class MatrixRating():
 
         self.matrixRating = data
         self.reverseMatrixRating = np.transpose(self.matrixRating).tolist()
+        
+        self.highest_rating = int(max([max(column) for column in self.matrixRating]))
+        self.lowest_rating = int( min([ min(list(filter(lambda x : x!=0 , column))) for column in self.matrixRating]))
 
         self.__matrix_component_of_item = self.__dozenOfItem()
         self.__matrix_component_of_user = self.__dozenOfUser()

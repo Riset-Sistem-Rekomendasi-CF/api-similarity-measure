@@ -1,5 +1,3 @@
-from measure.v2.mean import Mean
-from measure.v2.prediction import Prediction
 from measure.v2 import Similarity
 
 from typing_extensions import override
@@ -60,16 +58,3 @@ class TverskyIndexSimilarity(Similarity) :
                 similarity_result = self.similarity_calculation(int(i), int(j))
                 result[i].append(similarity_result)
         return result
-
-    def show_similarity(self) :
-        return self.result_similarity
-    
-    def get_reduced_data(self) :
-        data = 1-np.real(self.result_similarity)
-
-        # Memastikan matriks simetris
-        dissimilarity = (data + data.T) / 2
-
-        # Menerapkan MDS1
-        mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42, normalized_stress='auto')
-        return mds.fit_transform(dissimilarity).tolist()
