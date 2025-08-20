@@ -3,9 +3,8 @@ import measure.v2.similarities as sm
 from dto.v1.dtoSimilarity import DataPassed
 
 from middleware import SlidingWindowLog
-from fastapi import FastAPI
 
-limiter = SlidingWindowLog(rate_limit=100, per_seconds=10)
+limiter = SlidingWindowLog(rate_limit=50, per_seconds=10)
 
 similarity_routers = APIRouter(prefix="/api/v2",dependencies=[Depends(limiter)])
 
