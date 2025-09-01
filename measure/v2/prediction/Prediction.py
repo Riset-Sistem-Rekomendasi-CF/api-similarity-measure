@@ -22,8 +22,8 @@ class Prediction(Mean):
         self.matrixRating = data
         self.reverseMatrixRating = transpose(self.matrixRating).tolist()
         self.result_mean_centered_for_prediction = transpose(self.result_mean_centered).tolist() if opsional == "user-based" else self.result_mean_centered
-        self.k = k
-        self.prediction = self.main_prediction_calculation()      
+        # self.k = k
+        self.prediction = self.main_prediction_calculation(k)    
 
         self.topN = self.get_top_n()
 
@@ -36,7 +36,7 @@ class Prediction(Mean):
     def __denominator(self,u,i,nearestNeighborhood) -> float :
         return sum( list(map(lambda x : abs(x),itemgetter(*nearestNeighborhood)(self.similarity[u if self.opsional == "user-based" else i])))) if len(nearestNeighborhood) > 1 else abs(self.similarity[u if self.opsional == "user-based" else i][nearestNeighborhood[0]])
 
-    def selected_neighborhood(self,u,i) -> list[float]:
+    def selected_neighborhood(self,u,i,k) -> list[float]:
 
         indices = list(set(self.getUser(i))) if self.opsional == "user-based" else list(set(self.getItem(u)))
         similarity_selected = self.similarity[u if self.opsional == "user-based" else i]
@@ -46,12 +46,12 @@ class Prediction(Mean):
         else :
             return indices if len(indices) >= 1 else []
 
-        return indices[:self.k]
+        return indices[:k]
         
 
-    def prediction_calculation(self, u, i) -> float :
+    def prediction_calculation(self, u, i, k) -> float :
         
-        nearestNeighborhood = self.selected_neighborhood(u,i)
+        nearestNeighborhood = self.selected_neighborhood(u,i,k)
         average = self.result_mean[u if self.opsional == "user-based" else i]
 
         if len(nearestNeighborhood) != 0 :
@@ -62,11 +62,11 @@ class Prediction(Mean):
 
         return (average + (numerator / denom)) if denom != 0 else 0
 
-    def main_prediction_calculation(self) -> None :
+    def main_prediction_calculation(self,k) -> None :
         result = copy.deepcopy(self.data_for_prediction)
         for u in range(len(self.matrixRating)) :
             for i in range(len(self.matrixRating[0])) :
-                result[u][i] = self.prediction_calculation(u,i) if self.matrixRating[u][i] == 0 else self.matrixRating[u][i]
+                result[u][i] = self.prediction_calculation(u,i,k) if self.matrixRating[u][i] == 0 else self.matrixRating[u][i]
         return result
     
     def get_top_n(self) :
@@ -85,6 +85,12 @@ class Prediction(Mean):
             else :
                 result.append(unratedItem)
         
+        return result
+
+    def get_a_bunch_of_prediction(self,number) :
+        result = {}
+        for i in range(1,number+1) :
+            result[i] = self.main_prediction_calculation(i)
         return result
 
     def get_top_n_specific_user(self, u) :

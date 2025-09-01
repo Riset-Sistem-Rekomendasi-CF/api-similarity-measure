@@ -18,7 +18,7 @@ class CosineSimilarity (Similarity) :
     def numerator(self,u:int,v:int, commonlyRated : list[int]) -> float:
         if len(commonlyRated) == 0 :
             return 0
-        return sum(map(mul, list(itemgetter(*commonlyRated)(self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u))) , list(itemgetter(*commonlyRated)(self.self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))) )) if len(commonlyRated) > 1 else (self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u))[commonlyRated[0]] * (self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))[commonlyRated[0]]
+        return sum(map(mul, list(itemgetter(*commonlyRated)(self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u))) , list(itemgetter(*commonlyRated)(self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))) )) if len(commonlyRated) > 1 else (self.getItemWithValue(u) if self.opsional == "user-based" else self.getUserWithValue(u))[commonlyRated[0]] * (self.getItemWithValue(v) if self.opsional == "user-based" else self.getUserWithValue(v))[commonlyRated[0]]
 
     @override
     def denominator(self,u : int,v : int, set1 : list[int] ,set2 : list[int]) -> float:
