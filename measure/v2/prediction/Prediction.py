@@ -87,12 +87,6 @@ class Prediction(Mean):
         
         return result
 
-    def get_a_bunch_of_prediction(self,number) :
-        result = {}
-        for i in range(1,number+1) :
-            result[i] = self.main_prediction_calculation(i)
-        return result
-
     def get_top_n_specific_user(self, u) :
         return self.topN[u]
     
